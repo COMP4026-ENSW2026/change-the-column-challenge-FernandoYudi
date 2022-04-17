@@ -18,6 +18,27 @@ class PetsController extends Controller
         return Pet::all();
     }
 
+    public function create(Request $request)
+    {
+        // $attributes = request()->validate([
+        $request->validate([
+            'name' => 'required|min:2|max:20|Alpha-dash|unique:pets, name',
+            'specie' => 'required|min:2|max:20|regex:/^[A-Z][a-zA-Z0-9_-]+$',
+            'color' => 'required|min:2|max:20|regex:/^[A-Z][a-zA-Z0-9_-]+$',
+            'size' => 'required|max:2',
+        ]);
+
+        // $pet = Pet::create($attributes);
+        $pet = Pet::create([
+            'name' => $request['name'],
+            'specie' => $request['specie'],
+            'color' => $request['color'],
+            'size' => $request['size'],
+        ]);
+
+        return $pet;
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -25,22 +46,22 @@ class PetsController extends Controller
      * @param  \App\Http\Requests\StorePetRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        $request->validate([
-            'name' => 'required',
-            'specie' => 'required',
-            'color' => 'required',
+        $attributes = request()->validate([
+            'name' => 'required|min:2|max:20|regex:/^[A-Z][a-zA-Z0-9_-]+$|unique:pets, name',
+            'specie' => 'required|min:2|max:20|regex:/^[A-Z][a-zA-Z0-9_-]+$',
+            'color' => 'required|min:2|max:20|regex:/^[A-Z][a-zA-Z0-9_-]+$',
             'size' => 'required|max:2',
         ]);
 
-
-        $pet = Pet::create([
-            'name' => $request['name'],
-            'specie' => $request['specie'],
-            'color' => $request['color'],
-            'size' => $request['size'],
-        ]);
+        $pet = Pet::create($attributes);
+        // $pet = Pet::create([
+        //     'name' => $request['name'],
+        //     'specie' => $request['specie'],
+        //     'color' => $request['color'],
+        //     'size' => $request['size'],
+        // ]);
 
         return $pet;
     }
